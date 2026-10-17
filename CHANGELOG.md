@@ -6,6 +6,13 @@ and versions follow [Semantic Versioning](https://semver.org); how to release:
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-17
+
+### Fixed
+
+- Initialize install directories locally so dependency licenses stay inside the installation
+  prefix when another Nomisma repository has already loaded the shared CMake kit.
+
 ## [0.1.0] - 2026-10-17
 
 ### Added
