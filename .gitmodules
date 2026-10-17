@@ -1,0 +1,11 @@
+[submodule "external/base"]
+	path = external/base
+	url = ../base.git
+[submodule "external/spdlog"]
+	path = external/spdlog
+	url = https://github.com/gabime/spdlog.git
+	shallow = true
+[submodule "external/fmt"]
+	path = external/fmt
+	url = https://github.com/fmtlib/fmt.git
+	shallow = true
