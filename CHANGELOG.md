@@ -6,6 +6,32 @@ and versions follow [Semantic Versioning](https://semver.org); how to release:
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-18
+
+### Added
+
+- Owning `nom::logger` instances for global and local logging, with direct logging methods
+  and an explicit-logger `NOM_LOG` macro.
+- Configuration validation through `std::expected<void, std::string> validate() const`, with
+  field paths in validation errors.
+
+### Changed
+
+- Replace the global logger lifecycle functions with `init_logger`, `set_log_level` and
+  `flush_logger`, each taking a logger reference. The global wrapper starts empty and requires
+  explicit initialization.
+- Hide spdlog behind the module API and require an explicit `import nom.spd_logger` when using
+  the macro-only logging header. Configuration adapters own type registrations.
+- Inline threshold checks and use `log_prechecked_level` in macros to avoid a repeated wrapper
+  check while keeping suppressed arguments unevaluated.
+- Disable spdlog atomic levels and thread-ID capture for single-threaded applications.
+- Propagate formatting exceptions and keep flush failures nonfatal during reconfiguration.
+
+### Fixed
+
+- Reject embedded NUL characters in file names before initialization side effects.
+- Render the public severity labels, including `ALWAYS`, consistently in log output.
+
 ## [0.1.1] - 2026-10-17
 
 ### Fixed
