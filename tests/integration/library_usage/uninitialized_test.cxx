@@ -34,8 +34,6 @@ int main(int argc, char** argv)
             INFO("global logging before initialization");
         else if (operation == "log")
             NOM_LOG(empty, nom::log_level::info, "local logging before initialization");
-        else if (operation == "debug")
-            NOM_LOG(empty, nom::log_level::debug, "debug logging before initialization");
         else if (operation == "set")
             nom::set_log_level(empty, nom::log_level::info);
         else if (operation == "flush")

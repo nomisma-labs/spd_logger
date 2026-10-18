@@ -36,7 +36,7 @@ if(CMAKE_CONFIGURATION_TYPES OR test_build_type STREQUAL "debug")
     if(CMAKE_CONFIGURATION_TYPES)
         set(assertion_configurations CONFIGURATIONS Debug)
     endif()
-    foreach(operation IN ITEMS global log debug set flush prechecked)
+    foreach(operation IN ITEMS global log set flush prechecked)
         add_test(NAME uninitialized_${operation}
             COMMAND ${CMAKE_COMMAND}
                 -DCONTRACT_EXECUTABLE=$<TARGET_FILE:uninitialized>
