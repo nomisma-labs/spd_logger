@@ -31,7 +31,7 @@ int main(int argc, char** argv)
     {
         const std::string_view operation{argv[1]};
         if (operation == "global")
-            INFO("global logging before initialization");
+            LINFO("global logging before initialization");
         else if (operation == "log")
             NOM_LOG(empty, nom::log_level::info, "local logging before initialization");
         else if (operation == "set")

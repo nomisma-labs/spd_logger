@@ -12,14 +12,14 @@ import nom.spd_logger;
 int main()
 {
     nom::init_logger(nom::main_logger);
-    INFO("logging after explicit configuration");
+    LINFO("logging after explicit configuration");
     int evaluations = 0;
-    DEBUG("suppressed {}", ++evaluations);
+    LDEBUG("suppressed {}", ++evaluations);
     if (evaluations != 0)
         return 1;
     nom::set_log_level(nom::main_logger, nom::log_level::debug);
-    DEBUG("enabled {}", ++evaluations);
-    ALWAYS("consumer finished");
+    LDEBUG("enabled {}", ++evaluations);
+    LALWAYS("consumer finished");
     nom::flush_logger(nom::main_logger);
 
     nom::logger local{nom::log_config{.level = nom::log_level::error}};

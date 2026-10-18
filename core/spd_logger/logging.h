@@ -14,8 +14,8 @@
             nom_log_target.log_prechecked_level(nom_log_severity, ::nom::log_location::current(), __VA_ARGS__);        \
     } while (false)
 
-#define DEBUG(...) NOM_LOG(::nom::main_logger, ::nom::log_level::debug, __VA_ARGS__)
-#define INFO(...) NOM_LOG(::nom::main_logger, ::nom::log_level::info, __VA_ARGS__)
-#define WARN(...) NOM_LOG(::nom::main_logger, ::nom::log_level::warn, __VA_ARGS__)
-#define ERROR(...) NOM_LOG(::nom::main_logger, ::nom::log_level::error, __VA_ARGS__)
-#define ALWAYS(...) NOM_LOG(::nom::main_logger, ::nom::log_level::always, __VA_ARGS__)
+#define LDEBUG(...) NOM_LOG(::nom::main_logger, ::nom::log_level::debug, __VA_ARGS__)
+#define LINFO(...) NOM_LOG(::nom::main_logger, ::nom::log_level::info, __VA_ARGS__)
+#define LWARN(...) NOM_LOG(::nom::main_logger, ::nom::log_level::warn, __VA_ARGS__)
+#define LERROR(...) NOM_LOG(::nom::main_logger, ::nom::log_level::error, __VA_ARGS__)
+#define LALWAYS(...) NOM_LOG(::nom::main_logger, ::nom::log_level::always, __VA_ARGS__)

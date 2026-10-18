@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Alexey Tkachenko
 // SPDX-License-Identifier: LicenseRef-Nomisma-Labs-Proprietary
 
-#define CATCH_CONFIG_PREFIX_MESSAGES
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
 
@@ -128,26 +127,27 @@ namespace
 
 TEST_CASE("severity filtering skips arguments and supports all public levels", "[logging]")
 {
+    INFO("The default INFO threshold must suppress DEBUG arguments");
     const log_files files;
     nom::init_logger(nom::main_logger, files.config());
 
     int evaluations = 0;
-    DEBUG("suppressed {}", ++evaluations);
+    LDEBUG("suppressed {}", ++evaluations);
     CHECK(evaluations == 0);
 
-    INFO("enabled {}", ++evaluations);
-    WARN("warning record");
-    ERROR("error record");
-    ALWAYS("always record");
+    LINFO("enabled {}", ++evaluations);
+    LWARN("warning record");
+    LERROR("error record");
+    LALWAYS("always record");
     CHECK(evaluations == 1);
 
     nom::set_log_level(nom::main_logger, nom::log_level::always);
-    ERROR("suppressed error {}", ++evaluations);
-    ALWAYS("highest threshold record");
+    LERROR("suppressed error {}", ++evaluations);
+    LALWAYS("highest threshold record");
     CHECK(evaluations == 1);
 
     nom::set_log_level(nom::main_logger, nom::log_level::debug);
-    DEBUG("debug enabled {}", ++evaluations);
+    LDEBUG("debug enabled {}", ++evaluations);
     nom::flush_logger(nom::main_logger);
     CHECK(evaluations == 2);
 
@@ -170,14 +170,14 @@ TEST_CASE("messages retain braces and identify their calling source line", "[log
     nom::init_logger(nom::main_logger, files.config());
 
     const auto source_line = __LINE__ + 1;
-    INFO("literal {braces}");
+    LINFO("literal {braces}");
     const std::string runtime_message = "runtime {message}";
-    INFO(runtime_message);
-    INFO("formatted {} {}", 42, "value");
+    LINFO(runtime_message);
+    LINFO("formatted {} {}", 42, "value");
     if (true)
-        INFO("statement macro");
+        LINFO("statement macro");
     else
-        INFO("unused branch");
+        LINFO("unused branch");
     nom::flush_logger(nom::main_logger);
 
     const auto output = files.read();
@@ -194,9 +194,9 @@ TEST_CASE("caller-provided fmt formatters retain their formatting options", "[lo
     const log_files files;
     nom::init_logger(nom::main_logger, files.config());
 
-    INFO("custom {:04}", formatted_event{17});
+    LINFO("custom {:04}", formatted_event{17});
     const auto source_line = __LINE__ + 1;
-    INFO(formatted_event{23});
+    LINFO(formatted_event{23});
     nom::flush_logger(nom::main_logger);
 
     CHECK(files.read().find("custom 0017") != std::string::npos);
@@ -209,9 +209,9 @@ TEST_CASE("exceptions from ADL format_as propagate and leave the logger usable",
     nom::init_logger(nom::main_logger, files.config());
 
     int evaluations = 0;
-    CHECK_THROWS_AS([&] { INFO("format_as record {}", throwing_event{&evaluations}); }(), std::runtime_error);
+    CHECK_THROWS_AS([&] { LINFO("format_as record {}", throwing_event{&evaluations}); }(), std::runtime_error);
     CHECK(evaluations == 1);
-    INFO("record after failed formatting");
+    LINFO("record after failed formatting");
     nom::flush_logger(nom::main_logger);
 
     const auto output = files.read();
@@ -368,10 +368,10 @@ TEST_CASE("reinitialization preserves the global object and changes its output",
     const log_files files;
     const auto* original = &nom::main_logger;
     nom::init_logger(nom::main_logger, files.config());
-    INFO("first destination");
+    LINFO("first destination");
 
     nom::init_logger(nom::main_logger, files.config(nom::log_level::debug, "other.log"));
-    DEBUG("second destination");
+    LDEBUG("second destination");
     nom::flush_logger(nom::main_logger);
 
     CHECK(&nom::main_logger == original);
@@ -383,9 +383,9 @@ TEST_CASE("reinitialization preserves the global object and changes its output",
 
     nom::init_logger(nom::main_logger, files.config());
     int evaluations = 0;
-    DEBUG("suppressed after reinitialization {}", ++evaluations);
+    LDEBUG("suppressed after reinitialization {}", ++evaluations);
     CHECK(evaluations == 0);
-    INFO("appended record");
+    LINFO("appended record");
     nom::flush_logger(nom::main_logger);
     CHECK(files.read().find("first destination") != std::string::npos);
     CHECK(files.read().find("appended record") != std::string::npos);
@@ -397,7 +397,7 @@ TEST_CASE("failed initialization keeps the previous configuration usable", "[log
     const log_files files;
     nom::init_logger(nom::main_logger, files.config());
     const auto* original = &nom::main_logger;
-    INFO("buffered record before invalid configuration");
+    LINFO("buffered record before invalid configuration");
     const auto before_validation = files.read();
 
     auto invalid = files.config(nom::log_level::debug);
@@ -419,9 +419,9 @@ TEST_CASE("failed initialization keeps the previous configuration usable", "[log
     CHECK_THROWS_AS(nom::init_logger(nom::main_logger, invalid), std::runtime_error);
 
     int evaluations = 0;
-    DEBUG("suppressed after rejected configuration {}", ++evaluations);
+    LDEBUG("suppressed after rejected configuration {}", ++evaluations);
     CHECK(evaluations == 0);
-    INFO("still working");
+    LINFO("still working");
     nom::flush_logger(nom::main_logger);
     CHECK(&nom::main_logger == original);
     CHECK(files.read().find("buffered record before invalid configuration") != std::string::npos);
@@ -433,7 +433,7 @@ TEST_CASE("embedded NUL filenames are rejected before touching the active file",
 {
     const log_files files;
     nom::init_logger(nom::main_logger, files.config());
-    INFO("record before invalid configuration");
+    LINFO("record before invalid configuration");
 
     for (const bool rotate : {false, true})
     {
@@ -443,7 +443,7 @@ TEST_CASE("embedded NUL filenames are rejected before touching the active file",
         if (rotate)
             invalid.file->rotation_size = nom::cfg_uint{80};
         CHECK_THROWS_AS(nom::init_logger(nom::main_logger, invalid), std::invalid_argument);
-        INFO("record after rejection {}", rotate);
+        LINFO("record after rejection {}", rotate);
     }
     nom::flush_logger(nom::main_logger);
 
@@ -462,7 +462,7 @@ TEST_CASE("rotation bounds retained files and flush makes the last record visibl
     nom::init_logger(nom::main_logger, config);
 
     for (int index = 0; index < 20; ++index)
-        INFO("record {} {}", index, std::string(180, 'x'));
+        LINFO("record {} {}", index, std::string(180, 'x'));
     nom::flush_logger(nom::main_logger);
 
     CHECK(std::filesystem::exists(files.path("main.1.log")));
@@ -475,9 +475,9 @@ TEST_CASE("error and always records flush synchronously", "[logging]")
 {
     const log_files files;
     nom::init_logger(nom::main_logger, files.config());
-    ERROR("error is visible immediately");
+    LERROR("error is visible immediately");
     CHECK(files.read().find("error is visible immediately") != std::string::npos);
-    ALWAYS("always is visible immediately");
+    LALWAYS("always is visible immediately");
     CHECK(files.read().find("always is visible immediately") != std::string::npos);
 }
 
@@ -487,10 +487,10 @@ TEST_CASE("reinitializing a rotating destination accounts for buffered records",
     auto config = files.config();
     config.file->rotation_size = nom::cfg_uint{256};
     nom::init_logger(nom::main_logger, config);
-    INFO("before {}", std::string(180, 'x'));
+    LINFO("before {}", std::string(180, 'x'));
 
     nom::init_logger(nom::main_logger, config);
-    INFO("after {}", std::string(180, 'y'));
+    LINFO("after {}", std::string(180, 'y'));
     nom::flush_logger(nom::main_logger);
 
     CHECK(files.read("main.1.log").find("before ") != std::string::npos);

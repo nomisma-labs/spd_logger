@@ -2,9 +2,9 @@
 
 <!-- repo-description:begin -->
 `spd_logger` is a synchronous logger for single-threaded C++ applications. It provides an owning
-`nom::logger`, the global `nom::main_logger`, `DEBUG` / `INFO` / `WARN` / `ERROR` / `ALWAYS` macros,
-and `NOM_LOG` for an explicit logger. Console or rotating-file output uses spdlog and fmt, with
-ordinary C++ configuration types from `base`; it starts no background threads.
+`nom::logger`, the global `nom::main_logger`, `LDEBUG` / `LINFO` / `LWARN` / `LERROR` / `LALWAYS`
+macros, and `NOM_LOG` for an explicit logger. Console or rotating-file output uses spdlog and fmt,
+with ordinary C++ configuration types from `base`; it starts no background threads.
 <!-- repo-description:end -->
 
 ```cpp
@@ -15,7 +15,7 @@ import nom.spd_logger;
 int main()
 {
     nom::init_logger(nom::main_logger);
-    INFO("Application started with {} connections", 3);
+    LINFO("Application started with {} connections", 3);
     nom::flush_logger(nom::main_logger);
 }
 ```

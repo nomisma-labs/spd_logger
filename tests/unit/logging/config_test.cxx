@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Alexey Tkachenko
 // SPDX-License-Identifier: LicenseRef-Nomisma-Labs-Proprietary
 
-#define CATCH_CONFIG_PREFIX_MESSAGES
+#include <spd_logger/logging.h>
+
 #include <catch2/catch_test_macros.hpp>
 
 #include <cstddef>
@@ -24,6 +25,7 @@ namespace
 {
     void check_invalid_file(const nom::logfile_config& config, const std::string& message)
     {
+        INFO("Expected validation error: " << message);
         const auto result = config.validate();
         REQUIRE_FALSE(result.has_value());
         CHECK(result.error() == message);

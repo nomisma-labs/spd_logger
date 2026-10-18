@@ -16,8 +16,8 @@ int main()
 {
     const nom::log_config config{.level = nom::log_level::info};
     nom::init_logger(nom::main_logger, config);
-    INFO("Application started");
-    DEBUG("Processed {} messages", 42);
+    LINFO("Application started");
+    LDEBUG("Processed {} messages", 42);
     nom::flush_logger(nom::main_logger);
 }
 ```
@@ -29,8 +29,8 @@ logging. Importing the module alone is sufficient to construct or configure a lo
 the formatting dependency; application-defined fmt formatters can include the relevant fmt
 headers before the module import.
 
-`DEBUG`, `INFO`, `WARN`, `ERROR` and `ALWAYS` accept a message or a compile-time-checked fmt format
-string followed by arguments, and write to `nom::main_logger`. A message without formatting
+`LDEBUG`, `LINFO`, `LWARN`, `LERROR` and `LALWAYS` accept a message or a compile-time-checked fmt
+format string followed by arguments, and write to `nom::main_logger`. A message without formatting
 arguments is written as-is, including braces. Suppressed calls do not evaluate their message
 or formatting arguments. The macros behave as single statements and capture the calling source
 file and line.
@@ -145,7 +145,7 @@ field mapping and format-specific validation; this library registers no custom c
 types and has no dependency on `json_config` or an external configuration format.
 
 The [single example](../../apps/logger_example/main.cpp) initializes a hardcoded configuration,
-shows suppressed DEBUG argument evaluation, changes the level and writes a few messages.
+shows suppressed `LDEBUG` argument evaluation, changes the level and writes a few messages.
 
 ## Consuming and checking the library
 
@@ -158,9 +158,9 @@ filtering, argument evaluation, source locations, file rotation, flushing, reini
 failure preservation. Source-tree and installed-package consumers test both the macro/header
 interface and an import-only interface.
 
-Catch2 also defines `INFO` and `WARN`. Tests that include the logging header define
-`CATCH_CONFIG_PREFIX_MESSAGES` before Catch2 headers and use `CATCH_INFO` / `CATCH_WARN` for test
-diagnostics.
+The logger's `LINFO` and `LWARN` macros coexist with Catch2's normal `INFO` and `WARN` diagnostics.
+Tests can include both libraries without a prefix workaround. The logger provides no short-name
+macro aliases.
 
 `trace_logger` is independent and unchanged. Its overlapping `nom` API is intentional during
 development; this version does not combine both logger libraries in one application.

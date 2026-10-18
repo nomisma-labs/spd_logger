@@ -4,7 +4,7 @@
 `spd_logger` provides synchronous, owning loggers for single-threaded applications, including
 the global `nom::main_logger`. It uses spdlog internally for sinks, fmt for message formatting,
 and `base` for common configuration types. The module is `nom.spd_logger`, the CMake target is
-`nom::spd_logger`, and `spd_logger/logging.h` supplies `DEBUG`, `INFO`, `WARN`, `ERROR`, `ALWAYS`
+`nom::spd_logger`, and `spd_logger/logging.h` supplies `LDEBUG`, `LINFO`, `LWARN`, `LERROR`, `LALWAYS`
 and the explicit-logger macro `NOM_LOG`.
 <!-- repo-description:end -->
 
@@ -53,8 +53,8 @@ Rules for this repo alone follow below.
   `std::expected<void, std::string> validate() const`. File validation owns filename and rotation
   rules; `log_config` prefixes nested file errors with `/file`. `init_logger()` validates before
   backend side effects and throws `std::invalid_argument` with the returned message on failure.
-- `INFO` and `WARN` collide with Catch2's macros. Tests define `CATCH_CONFIG_PREFIX_MESSAGES`
-  before including Catch2 headers and use `CATCH_INFO` / `CATCH_WARN` for their diagnostics.
+- Keep the `LDEBUG`, `LINFO`, `LWARN`, `LERROR` and `LALWAYS` names without short-name aliases.
+  They coexist with Catch2's normal `INFO` and `WARN` diagnostics; tests need no prefix workaround.
 - Dependencies are `base` v0.1.0, spdlog v1.17.0 and fmt 12.2.0. Link `nom::config_types` and
   `fmt::fmt` publicly, and `spdlog::spdlog` privately; exported packages require `base`,
   `"fmt 12"` and `spdlog`.
