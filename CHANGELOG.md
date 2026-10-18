@@ -6,6 +6,14 @@ and versions follow [Semantic Versioning](https://semver.org); how to release:
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-18
+
+### Changed
+
+- Rename the global logging macros to `LDEBUG`, `LINFO`, `LWARN`, `LERROR` and `LALWAYS`.
+  Update calls to the previous `DEBUG`, `INFO`, `WARN`, `ERROR` and `ALWAYS` names; the logging
+  header no longer defines them, so Catch2 diagnostics work without prefix configuration.
+
 ## [0.2.0] - 2026-10-18
 
 ### Added
