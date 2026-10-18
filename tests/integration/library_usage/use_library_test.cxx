@@ -3,20 +3,28 @@
 
 #include <spd_logger/logging.h>
 
+#ifdef SPDLOG_VERSION
+#error "The public logger interface must not expose spdlog headers"
+#endif
+
 import nom.spd_logger;
 
 int main()
 {
-    // The namespace-scope logger already exists; explicit initialization configures it.
-    INFO("logging before explicit configuration");
-    nom::init_main_logger();
+    nom::init_logger(nom::main_logger);
+    INFO("logging after explicit configuration");
     int evaluations = 0;
     DEBUG("suppressed {}", ++evaluations);
     if (evaluations != 0)
         return 1;
-    nom::set_main_log_level(nom::log_level::debug);
+    nom::set_log_level(nom::main_logger, nom::log_level::debug);
     DEBUG("enabled {}", ++evaluations);
     ALWAYS("consumer finished");
-    nom::flush_main_logger();
+    nom::flush_logger(nom::main_logger);
+
+    nom::logger local{nom::log_config{.level = nom::log_level::error}};
+    NOM_LOG(local, nom::log_level::info, "suppressed local {}", ++evaluations);
+    NOM_LOG(local, nom::log_level::always, "independent consumer logger");
+    nom::flush_logger(local);
     return evaluations == 1 ? 0 : 1;
 }

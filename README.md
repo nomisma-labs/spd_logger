@@ -1,10 +1,10 @@
 # spd_logger
 
 <!-- repo-description:begin -->
-`spd_logger` is a synchronous logger for single-threaded C++ applications. It provides one
-global logger, `DEBUG` / `INFO` / `WARN` / `ERROR` / `ALWAYS` macros, console or rotating-file
-output, and ordinary C++ configuration. It uses spdlog and fmt, with common configuration types
-from `base`; it starts no background threads.
+`spd_logger` is a synchronous logger for single-threaded C++ applications. It provides an owning
+`nom::logger`, the global `nom::main_logger`, `DEBUG` / `INFO` / `WARN` / `ERROR` / `ALWAYS` macros,
+and `NOM_LOG` for an explicit logger. Console or rotating-file output uses spdlog and fmt, with
+ordinary C++ configuration types from `base`; it starts no background threads.
 <!-- repo-description:end -->
 
 ```cpp
@@ -14,14 +14,15 @@ import nom.spd_logger;
 
 int main()
 {
-    nom::init_main_logger();
+    nom::init_logger(nom::main_logger);
     INFO("Application started with {} connections", 3);
-    nom::flush_main_logger();
+    nom::flush_logger(nom::main_logger);
 }
 ```
 
-Link `nom::spd_logger` and import `nom.spd_logger`. The logger object exists before `main()`;
-initialization configures it. A disabled log call does not evaluate its arguments. Read the
+Link `nom::spd_logger` and import `nom.spd_logger`. The global wrapper exists before `main()`
+and starts empty; initialize it before logging, changing its level or flushing. A disabled logging
+macro does not evaluate its message arguments. Read the
 [logging guide](docs/spd_logger/logger.md) for configuration, lifecycle and severity semantics,
 or run the [small example](apps/logger_example/main.cpp).
 

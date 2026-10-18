@@ -13,17 +13,17 @@ int main()
     };
 
     const app_config config;
-    nom::init_main_logger(config.log);
+    nom::init_logger(nom::main_logger, config.log);
     INFO("Application started at level {}", nom::to_string(config.log.level));
 
     int evaluations = 0;
     DEBUG("Suppressed argument: {}", ++evaluations);
     INFO("Suppressed DEBUG arguments evaluated {} times", evaluations);
 
-    nom::set_main_log_level(nom::log_level::debug);
+    nom::set_log_level(nom::main_logger, nom::log_level::debug);
     DEBUG("Enabled argument: {}", ++evaluations);
     WARN("An example warning");
     ERROR("An example error");
     ALWAYS("Application finished");
-    nom::flush_main_logger();
+    nom::flush_logger(nom::main_logger);
 }

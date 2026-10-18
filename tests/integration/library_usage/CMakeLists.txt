@@ -26,3 +26,23 @@ add_test(NAME use_library COMMAND use_library)
 add_executable(import_only import_only_test.cxx)
 target_link_libraries(import_only PRIVATE nom::spd_logger)
 add_test(NAME import_only COMMAND import_only)
+
+# Initialization misuse is an assertion contract; Release must never execute it.
+string(TOLOWER "${CMAKE_BUILD_TYPE}" test_build_type)
+if(CMAKE_CONFIGURATION_TYPES OR test_build_type STREQUAL "debug")
+    add_executable(uninitialized uninitialized_test.cxx)
+    target_link_libraries(uninitialized PRIVATE nom::spd_logger)
+    set(assertion_configurations)
+    if(CMAKE_CONFIGURATION_TYPES)
+        set(assertion_configurations CONFIGURATIONS Debug)
+    endif()
+    foreach(operation IN ITEMS global log debug set flush prechecked)
+        add_test(NAME uninitialized_${operation}
+            COMMAND ${CMAKE_COMMAND}
+                -DCONTRACT_EXECUTABLE=$<TARGET_FILE:uninitialized>
+                -DCONTRACT_OPERATION=${operation}
+                "-DCONTRACT_DIAGNOSTIC=not initialized"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/check_contract_failure.cmake
+            ${assertion_configurations})
+    endforeach()
+endif()
