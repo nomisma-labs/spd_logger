@@ -7,6 +7,12 @@ macros, and `NOM_LOG` for an explicit logger. Console or rotating-file output us
 with ordinary C++ configuration types from `base`; it starts no background threads.
 <!-- repo-description:end -->
 
+C++ builds and consumers use CMake 4.4.x, Ninja, GCC 16 or Clang 22, and libstdc++ 16
+standard-library module sources. Enable std module detection before the consumer's first
+`project()` and call `nom_enable_std_modules(target)` on each compiled consumer target.
+See [standard-library module setup](docs/kit/build.md#modules), including package consumers
+without the kit. Macro headers remain textual includes before imports.
+
 ```cpp
 #include <spd_logger/logging.h>
 

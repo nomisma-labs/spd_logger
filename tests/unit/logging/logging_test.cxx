@@ -12,16 +12,7 @@
 #error "The public logger interface must not expose spdlog headers"
 #endif
 
-#include <chrono>
-#include <cstddef>
-#include <filesystem>
-#include <fstream>
-#include <initializer_list>
-#include <iterator>
-#include <stdexcept>
-#include <string>
-#include <system_error>
-#include <type_traits>
+import std;
 
 import nom.spd_logger;
 

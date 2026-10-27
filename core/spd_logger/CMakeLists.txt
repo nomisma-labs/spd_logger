@@ -7,6 +7,7 @@ nom_lib(spd_logger
     HEADERS logging.h
     PUBLIC_DEPS nom::config_types fmt::fmt
     PRIVATE_DEPS spdlog::spdlog)
+nom_enable_std_modules(spd_logger)
 
 if(nom_install)
     nom_install_package(TARGETS spd_logger DEPENDENCIES base "fmt 12" spdlog)

@@ -1,11 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Alexey Tkachenko
 // SPDX-License-Identifier: LicenseRef-Nomisma-Labs-Proprietary
 
-#include <expected>
-#include <string>
-#include <string_view>
-#include <type_traits>
-#include <utility>
+import std;
 
 import nom.spd_logger;
 

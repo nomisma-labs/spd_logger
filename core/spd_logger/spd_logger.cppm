@@ -4,16 +4,12 @@
 module;
 
 #include <cassert>
-#include <expected>
-#include <memory>
-#include <source_location>
-#include <string>
-#include <string_view>
-#include <type_traits>
 
 #include <fmt/base.h>
 
 export module nom.spd_logger;
+
+import std;
 
 export import nom.config_types;
 

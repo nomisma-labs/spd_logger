@@ -5,14 +5,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <cstddef>
-#include <cstdint>
-#include <expected>
-#include <initializer_list>
-#include <limits>
-#include <string>
-#include <type_traits>
-#include <utility>
+import std;
 
 import nom.spd_logger;
 

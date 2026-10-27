@@ -10,18 +10,12 @@ module;
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include <cstddef>
+#include <cassert>
 #include <cstdio>
-#include <ctime>
-#include <exception>
-#include <iterator>
-#include <memory>
-#include <stdexcept>
-#include <string>
-#include <string_view>
-#include <utility>
 
 module nom.spd_logger;
+
+import std;
 
 namespace nom
 {

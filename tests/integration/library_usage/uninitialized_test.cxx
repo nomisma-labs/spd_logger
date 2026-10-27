@@ -4,9 +4,8 @@
 #include <spd_logger/logging.h>
 
 #include <csignal>
-#include <cstdlib>
-#include <exception>
-#include <string_view>
+
+import std;
 
 import nom.spd_logger;
 

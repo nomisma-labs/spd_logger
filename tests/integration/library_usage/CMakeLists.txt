@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: 2026 Alexey Tkachenko
 # SPDX-License-Identifier: LicenseRef-Nomisma-Labs-Proprietary
 
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 4.4)
+
+include(${CMAKE_CURRENT_LIST_DIR}/../../../cmake/kit/std_modules.cmake)
 project(spd_logger_library_usage LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -19,11 +21,13 @@ endif()
 enable_testing()
 
 add_executable(use_library use_library_test.cxx)
+nom_enable_std_modules(use_library)
 target_link_libraries(use_library PRIVATE nom::spd_logger)
 add_test(NAME use_library COMMAND use_library)
 
 # This consumer must see the enum and configuration types without the macro header.
 add_executable(import_only import_only_test.cxx)
+nom_enable_std_modules(import_only)
 target_link_libraries(import_only PRIVATE nom::spd_logger)
 add_test(NAME import_only COMMAND import_only)
 
@@ -31,6 +35,7 @@ add_test(NAME import_only COMMAND import_only)
 string(TOLOWER "${CMAKE_BUILD_TYPE}" test_build_type)
 if(CMAKE_CONFIGURATION_TYPES OR test_build_type STREQUAL "debug")
     add_executable(uninitialized uninitialized_test.cxx)
+    nom_enable_std_modules(uninitialized)
     target_link_libraries(uninitialized PRIVATE nom::spd_logger)
     set(assertion_configurations)
     if(CMAKE_CONFIGURATION_TYPES)
