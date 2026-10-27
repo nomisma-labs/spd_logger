@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.30)
 
 # The version lives only here; releases are tagged v<version> (docs/kit/build.md#versioning).
 project(spd_logger
-    VERSION 0.3.0
+    VERSION 0.4.0
     DESCRIPTION "Synchronous single-threaded application logging for Nomisma"
     LANGUAGES CXX)
 

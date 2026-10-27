@@ -6,8 +6,11 @@ and versions follow [Semantic Versioning](https://semver.org); how to release:
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-27
+
 ### Changed
 
+- Update the `base` dependency to v0.2.0.
 - Sync the shared build infrastructure with cmake_template v0.11.1; `nom_app()` uses the
   supplied target name without a project prefix.
 
