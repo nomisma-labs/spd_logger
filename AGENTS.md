@@ -55,7 +55,7 @@ Rules for this repo alone follow below.
   backend side effects and throws `std::invalid_argument` with the returned message on failure.
 - Keep the `LDEBUG`, `LINFO`, `LWARN`, `LERROR` and `LALWAYS` names without short-name aliases.
   They coexist with Catch2's normal `INFO` and `WARN` diagnostics; tests need no prefix workaround.
-- Dependencies are `base` v0.2.1, spdlog v1.17.0 and fmt 12.2.0. Link `nom::config_types` and
+- Dependencies are `base` v0.3.0, spdlog v1.17.0 and fmt 12.2.0. Link `nom::config_types` and
   `fmt::fmt` publicly, and `spdlog::spdlog` privately; exported packages require `base`,
   `"fmt 12"` and `spdlog`.
 - Build spdlog with `SPDLOG_NO_ATOMIC_LEVELS` and `SPDLOG_NO_THREAD_ID` enabled. Keep their
