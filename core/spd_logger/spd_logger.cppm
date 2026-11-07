@@ -53,7 +53,7 @@ export namespace nom
 
     struct log_config
     {
-        log_level level = log_level::info;
+        cfg_defaulted<log_level> level{log_level::info};
         // Unset selects the console. File logging appends to an existing file.
         cfg_optional<logfile_config> file{};
 

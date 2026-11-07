@@ -96,7 +96,7 @@ namespace
 
         nom::log_config config(nom::log_level level = nom::log_level::info, const std::string& name = "main.log") const
         {
-            return {.level = level, .file = nom::logfile_config{.name = path(name).string()}};
+            return {.level = {level}, .file = nom::logfile_config{.name = path(name).string()}};
         }
 
         std::string read(const std::string& name = "main.log") const

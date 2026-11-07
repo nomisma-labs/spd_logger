@@ -17,7 +17,7 @@ static_assert(
 
 int main()
 {
-    const nom::log_config config{.level = nom::log_level::error};
+    const nom::log_config config{.level = {nom::log_level::error}};
     if (!config.validate())
         return 1;
     const nom::logfile_config invalid_file;

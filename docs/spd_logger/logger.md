@@ -14,7 +14,7 @@ import nom.spd_logger;
 
 int main()
 {
-    const nom::log_config config{.level = nom::log_level::info};
+    const nom::log_config config{.level = {nom::log_level::info}};
     nom::init_logger(nom::main_logger, config);
     LINFO("Application started");
     LDEBUG("Processed {} messages", 42);
@@ -39,7 +39,7 @@ file and line.
 `nom::log_level`. It evaluates the logger expression once, even when the message is suppressed:
 
 ```cpp
-nom::logger audit{nom::log_config{.level = nom::log_level::info}};
+nom::logger audit{nom::log_config{.level = {nom::log_level::info}}};
 NOM_LOG(audit, nom::log_level::info, "Audit logger ready");
 nom::flush_logger(audit);
 ```
@@ -111,14 +111,17 @@ the same file, because each sink tracks rotation state independently.
 
 ## Configuration
 
-`log_config` contains a `log_level level` and an optional `logfile_config file`. An absent file
+`log_config` contains a `cfg_defaulted<log_level> level`, initialized to `info`, and an optional
+`logfile_config file`. The wrapper declares the field's default policy for configuration
+adapters; `*config.level` accesses the enum, and implicit reference conversion supports
+functions such as `nom::to_string(config.level)`. An absent file
 selects the console. A file configuration contains a `cfg_string name` and an optional
 `cfg_uint rotation_size` measured in bytes. File output appends; when rotation is enabled it
 retains up to ten older files in addition to the active file.
 
 ```cpp
 const nom::log_config config{
-    .level = nom::log_level::debug,
+    .level = {nom::log_level::debug},
     .file = nom::logfile_config{
         .name = "application.log",
         .rotation_size = nom::cfg_uint{1024 * 1024}}};

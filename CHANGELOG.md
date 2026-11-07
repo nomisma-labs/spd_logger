@@ -6,6 +6,15 @@ and versions follow [Semantic Versioning](https://semver.org); how to release:
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-07
+
+### Changed
+
+- Declare `log_config::level` as `cfg_defaulted<log_level>` so configuration
+  adapters can preserve its `info` default using the common per-field policy.
+  Explicit aggregate initialization uses `.level = {log_level::info}`; the
+  wrapper provides access to the underlying enum. No JSON dependency is added.
+
 ## [0.5.0] - 2026-10-28
 
 ### Changed

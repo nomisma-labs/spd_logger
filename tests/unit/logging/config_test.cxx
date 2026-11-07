@@ -13,6 +13,7 @@ static_assert(
     std::is_same_v<decltype(std::declval<const nom::logfile_config&>().validate()), std::expected<void, std::string>>);
 static_assert(
     std::is_same_v<decltype(std::declval<const nom::log_config&>().validate()), std::expected<void, std::string>>);
+static_assert(std::is_same_v<decltype(nom::log_config::level), nom::cfg_defaulted<nom::log_level>>);
 
 namespace
 {
@@ -34,6 +35,7 @@ TEST_CASE("console and unrotated file configurations validate for every named se
 {
     const nom::log_config defaults;
     CHECK(defaults.validate().has_value());
+    CHECK(*defaults.level == nom::log_level::info);
 
     const nom::logfile_config file{.name = "application.log"};
     CHECK(file.validate().has_value());
@@ -43,9 +45,10 @@ TEST_CASE("console and unrotated file configurations validate for every named se
                              nom::log_level::error,
                              nom::log_level::always})
     {
-        const nom::log_config console{.level = level};
+        const nom::log_config console{.level = {level}};
         CHECK(console.validate().has_value());
-        const nom::log_config configured_file{.level = level, .file = file};
+        CHECK(*console.level == level);
+        const nom::log_config configured_file{.level = {level}, .file = file};
         CHECK(configured_file.validate().has_value());
     }
 }

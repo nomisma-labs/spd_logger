@@ -9,7 +9,7 @@ int main()
 {
     struct app_config
     {
-        nom::log_config log{.level = nom::log_level::info};
+        nom::log_config log{.level = {nom::log_level::info}};
     };
 
     const app_config config;
