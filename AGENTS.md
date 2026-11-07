@@ -16,7 +16,7 @@ Rules for this repo alone follow below.
 
 - Read [docs/spd_logger/logger.md](docs/spd_logger/logger.md) for lifecycle, configuration and
   logging semantics. The public namespace is `nom`.
-- `core/spd_logger/`: the module exports `logger`, `main_logger`, severity, configuration and
+- `src/spd_logger/`: the module exports `logger`, `main_logger`, severity, configuration and
   lifecycle functions. `logging.h` contains only macros; using them requires importing the
   module. Keep spdlog types out of the public interface; fmt remains the formatting dependency.
   `logger_state.cpp` defines `main_logger` once at namespace scope. Do not replace it with a
@@ -55,7 +55,7 @@ Rules for this repo alone follow below.
   backend side effects and throws `std::invalid_argument` with the returned message on failure.
 - Keep the `LDEBUG`, `LINFO`, `LWARN`, `LERROR` and `LALWAYS` names without short-name aliases.
   They coexist with Catch2's normal `INFO` and `WARN` diagnostics; tests need no prefix workaround.
-- Dependencies are `base` v0.3.0, spdlog v1.17.0 and fmt 12.2.0. Link `nom::config_types` and
+- Dependencies are `base` v0.4.0, spdlog v1.17.0 and fmt 12.2.0. Link `nom::config_types` and
   `fmt::fmt` publicly, and `spdlog::spdlog` privately; exported packages require `base`,
   `"fmt 12"` and `spdlog`.
 - Build spdlog with `SPDLOG_NO_ATOMIC_LEVELS` and `SPDLOG_NO_THREAD_ID` enabled. Keep their
