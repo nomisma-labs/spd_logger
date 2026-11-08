@@ -1,5 +1,12 @@
 # TODO
 
+## Startup diagnostics
+
+- [ ] When file logging is successfully initialized, print a short notice to stderr showing
+  the absolute log-file path, so users can find application logs immediately after startup.
+  Emit the notice directly to the console, independently of the configured log level and
+  file sink.
+
 ## Flush and emergency logging
 
 - [x] Add `NOM_LOG_NOEXCEPT` and use it for `LERROR` and `LALWAYS` in destructor and cleanup
