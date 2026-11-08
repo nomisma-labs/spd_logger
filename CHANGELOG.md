@@ -6,6 +6,17 @@ and versions follow [Semantic Versioning](https://semver.org); how to release:
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-11-08
+
+### Added
+
+- `NOM_LOG_NOEXCEPT` catches argument evaluation and formatting/logging exceptions, with an
+  allocation-free stderr fallback containing the message or source expression and exception text.
+
+### Changed
+
+- `LERROR` and `LALWAYS` use `NOM_LOG_NOEXCEPT`; other logging macros retain exception propagation.
+
 ## [0.7.0] - 2026-11-08
 
 ### Changed

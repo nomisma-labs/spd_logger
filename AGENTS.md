@@ -5,7 +5,7 @@
 the global `nom::main_logger`. It uses spdlog internally for sinks, fmt for message formatting,
 and `base` for common configuration types. The module is `nom.spd_logger`, the CMake target is
 `nom::spd_logger`, and `spd_logger/logging.h` supplies `LDEBUG`, `LINFO`, `LWARN`, `LERROR`, `LALWAYS`
-and the explicit-logger macro `NOM_LOG`.
+and the explicit-logger macros `NOM_LOG` and `NOM_LOG_NOEXCEPT`.
 <!-- repo-description:end -->
 
 Read and follow the rules every Nomisma repo shares: @docs/kit/agents.md
@@ -39,8 +39,13 @@ Rules for this repo alone follow below.
   overloads accept raw messages, format strings with arguments, and single formattable values;
   callers must have checked `should_log()` first. They omit repeated wrapper level checks while the
   backend retains normal filtering. Direct member calls evaluate arguments before entry.
-  Formatting and type-erasure exceptions propagate unchanged; runtime backend I/O errors retain
-  their reporting policy and flush failures do not prevent reconfiguration.
+  Direct calls and `NOM_LOG` propagate formatting and type-erasure exceptions; runtime backend
+  I/O errors retain their reporting policy and flush failures do not prevent reconfiguration.
+- `NOM_LOG_NOEXCEPT` catches the entire call, including argument evaluation; `LERROR` and
+  `LALWAYS` use it. Its fallback writes the message or format text and exception text to stderr
+  with `fputs`, without allocation, formatting retries or repeated argument evaluation. If no
+  message is available, use the source expression. Catch non-standard exceptions too. Keep the
+  same initialization and threading preconditions. Internal macro helpers live in `nom::detail`.
 - Keep small logging wrappers explicitly `inline` in the module interface: `should_log()`,
   `log()`, `log_prechecked_level()` and the initialization assertion helper. Keep substantive
   formatting and backend writes in the implementation unit. The cached `level_` must match the

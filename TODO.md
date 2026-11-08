@@ -2,6 +2,11 @@
 
 ## Flush and emergency logging
 
+- [x] Add `NOM_LOG_NOEXCEPT` and use it for `LERROR` and `LALWAYS` in destructor and cleanup
+  paths. Contain argument, formatting and logging exceptions with a minimal stderr fallback;
+  preserve the initialization and calling-thread requirements.
+- [x] Remove `md_logger`'s temporary catch around its destructor's `LERROR` call as part
+  of adopting this release in `md_capture`.
 - [ ] Make synchronous flush-after-write an explicit, tested guarantee for `LALWAYS` and
   `LERROR`. The backend already uses `flush_on(spdlog::level::err)`, which covers both levels;
   preserve that behavior through configuration changes and both console and file sinks.

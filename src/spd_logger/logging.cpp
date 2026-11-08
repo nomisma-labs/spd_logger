@@ -117,6 +117,29 @@ namespace nom
 
     logger::~logger() = default;
 
+    void detail::report_log_failure(std::string_view message, const char* error) noexcept
+    {
+        // A view need not be NUL-terminated. Copy bounded chunks without allocating or formatting.
+        while (!message.empty())
+        {
+            char chunk[256];
+            const auto part = message.substr(0, sizeof(chunk) - 1);
+            const auto size = std::min(part.size(), part.find('\0'));
+            std::copy_n(message.data(), size, chunk);
+            chunk[size] = '\0';
+            std::fputs(chunk, stderr);
+            message.remove_prefix(size);
+            if (!message.empty() && message.front() == '\0')
+            {
+                std::fputs("\\0", stderr);
+                message.remove_prefix(1);
+            }
+        }
+        std::fputs("\n", stderr);
+        std::fputs(error, stderr);
+        std::fputs("\n", stderr);
+    }
+
     void logger::report_error(log_location location, const char* message) noexcept
     {
         std::fprintf(

@@ -44,6 +44,27 @@ NOM_LOG(audit, nom::log_level::info, "Audit logger ready");
 nom::flush_logger(audit);
 ```
 
+`NOM_LOG_NOEXCEPT(logger, level, ...)` keeps the same filtering, source location and message
+forms, but catches exceptions from the entire call, including logger, level and argument
+evaluation. `LERROR` and `LALWAYS` use this macro. `NOM_LOG`, `LDEBUG`, `LINFO` and `LWARN`
+continue to propagate exceptions.
+
+On failure, the no-throw macro writes the message or original format text to stderr with
+`fputs`, followed by `exception.what()` on the next line. It does not retry formatting or
+argument evaluation. If evaluation fails before the message is available, or a single
+formattable value cannot be rendered, it prints the argument expression from the source
+instead. Non-standard exceptions use `unknown logging exception` on the second line.
+For example, a failing formatter in `LERROR("Order {} failed", order)` produces:
+
+```text
+Order {} failed
+<exception.what()>
+```
+
+The fallback uses bounded stack storage, handles non-NUL-terminated views, and renders embedded
+NUL bytes as `\0`. It does not allocate, call fmt or use the logger. Initialization and
+calling-thread requirements still apply.
+
 Direct `logger::log(level, location, ...)` calls check the threshold before formatting. Both
 `log()` and the public `log_prechecked_level()` have overloads for a raw message, a checked fmt
 format string with arguments, and a single formattable value. Pass `nom::log_location::current()`
@@ -90,7 +111,8 @@ previous setup usable, or leave an initially empty wrapper empty. Backend initia
 failures, including file-open failures, throw `std::runtime_error`. Runtime output
 and flush failures are reported to stderr without throwing to the application or preventing
 reconfiguration. Formatting and type-erasure exceptions, including exceptions from custom
-formatters, propagate unchanged. Synchronous I/O can still stall the calling thread; this error
+formatters, propagate from direct calls and `NOM_LOG`; `NOM_LOG_NOEXCEPT`, `LERROR` and `LALWAYS`
+catch them as described above. Synchronous I/O can still stall the calling thread; this error
 policy does not provide nonblocking I/O.
 
 All logging, initialization, level changes and flushing must occur on the same application
@@ -158,8 +180,9 @@ module is `nom.spd_logger`; the macro header is `spd_logger/logging.h`.
 
 Run `./bootstrap.sh` for the repository's standard checks. The logging unit suite covers
 filtering, argument evaluation, source locations, file rotation, flushing, reinitialization and
-failure preservation. Source-tree and installed-package consumers test both the macro/header
-interface and an import-only interface.
+failure preservation. It also checks no-throw argument and formatter failures, stderr fallback
+contents, and suppressed evaluation. Source-tree and installed-package consumers test both the
+macro/header interface and an import-only interface.
 
 The logger's `LINFO` and `LWARN` macros coexist with Catch2's normal `INFO` and `WARN` diagnostics.
 Tests can include both libraries without a prefix workaround. The logger provides no short-name

@@ -354,6 +354,42 @@ TEST_CASE("explicit logging evaluates its instance and level once and skips supp
     CHECK(files.read().find("explicit {braces}") != std::string::npos);
 }
 
+TEST_CASE("noexcept logging preserves message forms, locations and single evaluation", "[logging][noexcept]")
+{
+    const log_files files;
+    nom::logger selected{files.config()};
+    int targets = 0;
+    int levels = 0;
+    int arguments = 0;
+    const auto target = [&]() -> nom::logger&
+    {
+        ++targets;
+        return selected;
+    };
+    const auto level = [&]
+    {
+        ++levels;
+        return nom::log_level::error;
+    };
+    const auto source_line = __LINE__ + 1;
+    NOM_LOG_NOEXCEPT(target(), level(), "enabled {}", ++arguments);
+    NOM_LOG_NOEXCEPT(selected, nom::log_level::error, std::string{"temporary {braces}"});
+    NOM_LOG_NOEXCEPT(selected, nom::log_level::error, "custom {:04}", formatted_event{17});
+    if (true)
+        NOM_LOG_NOEXCEPT(selected, nom::log_level::error, formatted_event{23});
+    else
+        FAIL("statement macro captured the else branch");
+
+    const auto output = files.read();
+    CHECK(targets == 1);
+    CHECK(levels == 1);
+    CHECK(arguments == 1);
+    CHECK(output.find("logging_test.cxx:" + std::to_string(source_line) + " enabled 1") != std::string::npos);
+    CHECK(output.find("temporary {braces}") != std::string::npos);
+    CHECK(output.find("custom 0017") != std::string::npos);
+    CHECK(output.find(" 23\n") != std::string::npos);
+}
+
 TEST_CASE("reinitialization preserves the global object and changes its output", "[logging]")
 {
     const log_files files;

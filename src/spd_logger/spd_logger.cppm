@@ -140,6 +140,61 @@ export namespace nom
         friend void flush_logger(logger& target) noexcept;
     };
 
+    namespace detail
+    {
+        using log_exception = std::exception;
+
+        void report_log_failure(std::string_view message, const char* error) noexcept;
+
+        template <typename Write> inline void try_log(std::string_view message, Write&& write) noexcept
+        {
+            try
+            {
+                std::forward<Write>(write)();
+            }
+            catch (const std::exception& error)
+            {
+                report_log_failure(message, error.what());
+            }
+            catch (...)
+            {
+                report_log_failure(message, "unknown logging exception");
+            }
+        }
+
+        // Handle failures while the arguments (including temporary messages) are still alive.
+        inline void log_prechecked_noexcept(
+            logger& target, log_level level, log_location location, const char*, std::string_view message) noexcept
+        {
+            try_log(message, [&] { target.log_prechecked_level(level, location, message); });
+        }
+
+        template <typename... Args>
+            requires(sizeof...(Args) > 0)
+        inline void log_prechecked_noexcept(logger& target,
+                                            log_level level,
+                                            log_location location,
+                                            const char*,
+                                            fmt::format_string<Args...> format,
+                                            Args&&... args) noexcept
+        {
+            const auto text = format.get();
+            try_log(std::string_view{text.data(), text.size()},
+                    [&] { target.log_prechecked_level(level, location, format, std::forward<Args>(args)...); });
+        }
+
+        template <typename Message>
+            requires(!std::is_convertible_v<const Message&, std::string_view>)
+        inline void log_prechecked_noexcept(logger& target,
+                                            log_level level,
+                                            log_location location,
+                                            const char* expression,
+                                            const Message& message) noexcept
+        {
+            try_log(expression, [&] { target.log_prechecked_level(level, location, message); });
+        }
+    } // namespace detail
+
     // A stable, empty global wrapper; init_logger creates its backend explicitly.
     extern logger main_logger;
 

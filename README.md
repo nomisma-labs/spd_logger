@@ -3,8 +3,9 @@
 <!-- repo-description:begin -->
 `spd_logger` is a synchronous logger for single-threaded C++ applications. It provides an owning
 `nom::logger`, the global `nom::main_logger`, `LDEBUG` / `LINFO` / `LWARN` / `LERROR` / `LALWAYS`
-macros, and `NOM_LOG` for an explicit logger. Console or rotating-file output uses spdlog and fmt,
-with ordinary C++ configuration types from `base`; it starts no background threads.
+macros, and `NOM_LOG` / `NOM_LOG_NOEXCEPT` for an explicit logger. Console or rotating-file output
+uses spdlog and fmt, with ordinary C++ configuration types from `base`; it starts no background
+threads.
 <!-- repo-description:end -->
 
 C++ builds and consumers use CMake 4.4.x, Ninja, GCC 16 or Clang 22, and libstdc++ 16
@@ -28,7 +29,8 @@ int main()
 
 Link `nom::spd_logger` and import `nom.spd_logger`. The global wrapper exists before `main()`
 and starts empty; initialize it before logging, changing its level or flushing. A disabled logging
-macro does not evaluate its message arguments. Read the
+macro does not evaluate its message arguments. `LERROR` and `LALWAYS` catch logging exceptions
+and fall back to stderr. Read the
 [logging guide](docs/spd_logger/logger.md) for configuration, lifecycle and severity semantics,
 or run the [small example](apps/logger_example/main.cpp).
 

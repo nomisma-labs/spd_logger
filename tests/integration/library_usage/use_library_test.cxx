@@ -25,6 +25,8 @@ int main()
     nom::logger local{nom::log_config{.level = {nom::log_level::error}}};
     NOM_LOG(local, nom::log_level::info, "suppressed local {}", ++evaluations);
     NOM_LOG(local, nom::log_level::always, "independent consumer logger");
+    NOM_LOG_NOEXCEPT(local, nom::log_level::error, "noexcept consumer {}", 42);
+    LERROR("noexcept global consumer {}", 17);
     nom::flush_logger(local);
     return evaluations == 1 ? 0 : 1;
 }
