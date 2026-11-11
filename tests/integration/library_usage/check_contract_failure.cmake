@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Alexey Tkachenko
-# SPDX-License-Identifier: LicenseRef-Nomisma-Labs-Proprietary
+# SPDX-License-Identifier: MIT
 
 execute_process(
     COMMAND "${CONTRACT_EXECUTABLE}" "${CONTRACT_OPERATION}"
