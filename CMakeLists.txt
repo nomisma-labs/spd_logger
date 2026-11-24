@@ -7,7 +7,7 @@ include(cmake/kit/std_modules.cmake)
 
 # The version lives only here; releases are tagged v<version> (docs/kit/build.md#versioning).
 project(spd_logger
-    VERSION 0.9.1
+    VERSION 0.9.2
     DESCRIPTION "Synchronous single-threaded application logging for Nomisma"
     LANGUAGES CXX)
 
